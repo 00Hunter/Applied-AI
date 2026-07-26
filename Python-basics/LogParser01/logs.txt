@@ -1,0 +1,3 @@
+2026-07-21 ERROR PaymentService Connection timeout
+2026-07-21 INFO UserService User created
+2026-07-21 ERROR PayrollService Duplicate payroll run
