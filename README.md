@@ -56,6 +56,76 @@ The implementation is intentionally small. The focus is on understanding each pa
 
 ---
 
+### Incident Validator
+
+The second module checks whether a summary of an incident stayed faithful to the original — specifically, whether every number in the source text survived into the summary, and whether any numbers were invented that were never there.
+
+It takes the numbers from the original text and the numbers from the summary, compares them both directions, and reports what was dropped and what was invented.
+
+The purpose of this module is to strengthen the Python foundations required for later applied AI work, including:
+
+* Regular expressions (the `re` module)
+* Character classes, quantifiers, and non-capturing groups
+* Sets and set operations (difference in both directions)
+* Converting between lists and sets
+* Functions and structured return values
+* Debugging by inspecting inputs before logic
+
+Example input:
+
+```text
+Original: During a 90-minute outage, a migration dropped 3 tables affecting 1,204 accounts.
+Summary:  A migration dropped 3 tables and affected 1204 accounts over 90 minutes.
+```
+
+Example output:
+
+```json
+{
+  "dropped_facts": ["1,204"],
+  "invented_facts": ["1204"]
+}
+```
+
+The core lesson lives in the regex: a naive `\d+` shatters `1,204` into `1` and `204`, producing false alarms. Growing the pattern into `\d+(?:[,.]\d+)*` — and understanding *why* the group must be non-capturing — is the real exercise. As with the log parser, the implementation stays deliberately small so each part is understood rather than copied.
+
+---
+
+### Incident Summarizer
+
+The third module is the first applied-AI project: it takes a raw IT/operations incident report and returns a single faithful summary sentence using the Gemini API.
+
+The summarizer itself is the vehicle; the goal is learning LLM API fundamentals — how a model call is structured, system vs user input, tokens and context windows, temperature and determinism, controlling model "thinking," and surviving real network failures with retries and timeouts.
+
+The Incident Validator above plugs into this module as its faithfulness check: after the model produces a summary, the validator confirms no numbers were dropped or invented. This is a small **eval** — an automated grader that turns "is this summary any good?" into a measurable result.
+
+The purpose of this module is to learn applied-AI foundations, including:
+
+* Structuring a model API call (system instruction vs per-call input)
+* Tokens, context windows, and reading token usage
+* Temperature and determinism
+* Thinking control (`thinking_level`) and its hidden token cost
+* Timeouts and retry loops (4xx vs 5xx, and the 429 special case)
+* Evaluating open-ended output automatically
+
+Example input:
+
+```text
+Payroll execution failed for 342 employees after a salary revision.
+Retries created duplicate payroll records for 17 employees.
+```
+
+Example output:
+
+```text
+A salary revision caused payroll execution to fail for 342 employees, and
+subsequent retries resulted in duplicate payroll records for 17 employees.
+```
+
+One sentence, every number preserved, cause-and-effect intact, nothing invented — with the validator confirming that automatically.
+
+---
+
 ## Why I Am Using a Bottom-Up Approach
 
 Applied AI applications often combine several concepts at the same time:
