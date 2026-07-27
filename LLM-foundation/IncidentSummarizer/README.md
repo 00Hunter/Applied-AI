@@ -151,12 +151,8 @@ find dropped and invented facts.
 | 12 | **Facts-check** — return dropped + invented | Done |
 | 13 | **Facts-check** — observe false failures on `1,204`, `v2.7` | Done |
 | 14 | **Facts-check** — smarter regex `\d+(?:[,.]\d+)*` | Done |
-| 15 | Latency timing (`time.perf_counter()`) | TODO |
-| 16 | Wrap everything in `summarize(incident_text)` | TODO |
-| 17 | Retry loop (503 backoff + 429 special case) | TODO |
-| 18 | "Not-an-incident" guard in system instruction | TODO |
 
-**Four metrics per call:** output ✓ · token usage ✓ · facts preserved ✓ · latency (TODO)
+**Four metrics per call:** output ✓ · token usage ✓ · facts preserved ✓ 
 
 ---
 
